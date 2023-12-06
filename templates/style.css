@@ -1,0 +1,29 @@
+body {
+    background-color: #202325;
+}
+
+.main h2 {
+    color: azure;
+}
+
+.main {
+    text-align: center;
+}
+
+.depth1 {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: space-evenly;
+}
+
+.btn {
+    background-color: rgb(34, 34, 34);
+    color: azure;
+    border: 0px solid;
+    width: 125px;
+    height: 50px;
+}
+
+.btn.pressed {
+    background-color: #004daa27;
+}
