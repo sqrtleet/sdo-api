@@ -1,0 +1,69 @@
+* {
+    vertical-align: middle;
+}
+
+body {
+    background-color: #9bbbc9;
+}
+
+.content h2 {
+    color: azure;
+}
+
+.content {
+    text-align: center;
+}
+
+.depth1 {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: space-evenly;
+    visibility: hidden;
+}
+
+.btn {
+    background-color: rgb(34, 34, 34);
+    color: azure;
+    border: 0 solid;
+    width: 125px;
+    height: 50px;
+}
+
+.depth1, .main {
+    margin-top: 50px;
+}
+
+.parse.btn {
+    margin-top: 30px;
+}
+
+.btn.pressed {
+    background-color: #004daa27;
+}
+
+.depth_content {
+    padding: 20px 30px;
+}
+
+.specialty_btn {
+    background-color: rgb(34, 34, 34);
+    color: azure;
+    border: 0 solid;
+    width: 250px;
+    height: 200px;
+    margin: 10px 10px;
+}
+
+.depth2, .depth3, .depth4 {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.course_btn {
+    background-color: rgb(34, 34, 34);
+    color: azure;
+    border: 0 solid;
+    width: 250px;
+    height: 200px;
+    margin: 10px 10px;
+}
