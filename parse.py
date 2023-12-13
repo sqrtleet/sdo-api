@@ -92,11 +92,22 @@ def set_modules_dict(resource_type, modules_dict, module_name, elements, is_fold
     if is_folder:
         modules_dict[module_name]['Folder'] = {}
         for elem in elements:
-            name = elem.find('div', class_='fp-filename-icon').find('span', class_='fp-filename').text
-            values = elem.select('div.filemanager ul li span.fp-filename-icon')
-            modules_dict[module_name]['Folder'][name] = {}
-            for value in values:
-                modules_dict[module_name]['Folder'][name][value.text] = 'Файл'
+            if not elem.find('div', class_='foldertree'):
+                global session
+                name = elem.find('span', class_='instancename').text
+                modules_dict[module_name]['Folder'][name] = {}
+                link = elem.find('a', class_='aalink').get('href')
+                response = session.get(link)
+                soup = BeautifulSoup(response.text, 'lxml')
+                files = soup.find_all('span', class_='fp-filename-icon')
+                for file in files:
+                    modules_dict[module_name]['Folder'][name][file.text] = 'Файл'
+            else:
+                name = elem.find('div', class_='fp-filename-icon').find('span', class_='fp-filename').text
+                values = elem.select('div.filemanager ul li span.fp-filename-icon')
+                modules_dict[module_name]['Folder'][name] = {}
+                for value in values:
+                    modules_dict[module_name]['Folder'][name][value.text] = 'Файл'
     else:
         for elem in elements:
             names = elem.find_all('span', class_='instancename')
@@ -163,6 +174,7 @@ def parse():
         category_elements = subcategories.find_all('div', class_='category')
         if category_elements:
             result = parse_categories(category_elements[6])
+            print(result)
             return result
         else:
             print('No \'category\' elements found.')
@@ -171,9 +183,9 @@ def parse():
     return 1
 
 
-if __name__ == '__main__':
-    # parse()
-
-    authorization()
-    # print(course_parse('32466'))
-    print(semester_parse('1671'))
+# if __name__ == '__main__':
+#     # parse()
+#
+#     authorization()
+#     print(course_parse('32457'))
+#     # print(semester_parse('1671'))

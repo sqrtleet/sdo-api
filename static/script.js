@@ -9,7 +9,7 @@ let category = null;
 let spec = null;
 let semester_data = null;
 let course_data = null;
-
+let dict_data = null;
 
 function changeColor(button) {
     if (currentButton !== null) {
@@ -24,6 +24,7 @@ function showDepth1() {
 }
 
 function showDepth2(arg, data) {
+    dict_data = data;
     if (depth2 === null) {
         content = document.createElement("div");
         content.classList.add("depth_content");
@@ -31,15 +32,18 @@ function showDepth2(arg, data) {
         depth2.classList.add("depth2");
         main.appendChild(content);
         content.appendChild(depth2);
-    } else if (depth3 != null) {
-        depth2.innerHTML = "";
-        depth3.innerHTML = "";
-        depth4.innerHTML = "";
-    } else if (depth4 != null) {
-        depth2.innerHTML = "";
-        depth4.innerHTML = "";
     } else {
         depth2.innerHTML = "";
+    }
+
+    if (depth3 != null) {
+        depth2.innerHTML = "";
+        depth3.innerHTML = "";
+    }
+
+    if (depth4 != null) {
+        depth2.innerHTML = "";
+        depth4.innerHTML = "";
     }
 
     category = arg;
@@ -97,6 +101,7 @@ function showDepth4(arg, data) {
     button.onclick = function () {
         changeColor(button);
         depth4.innerHTML = "";
+        depth3.innerHTML = "";
         showDepth3(spec, data);
     };
 
@@ -107,14 +112,21 @@ function showDepth4(arg, data) {
         button.classList.add("course_btn");
         button.innerText = key;
         button.id = id;
-        button.onclick = function () {
-            semester_request(id);
+        button.onclick = async function () {
+            let buttons = document.querySelectorAll('button')
+            buttons.forEach(function (button) {
+                button.disabled = true;
+            });
+            await semester_request(id)
             console.log(semester_data);
             for (let i in semester_data['data']) {
                 let course_id = semester_data['data'][i]['id'];
-                course_request(course_id)
-                console.log()
+                await course_request(course_id);
+                await getExcel(course_data);
             }
+            buttons.forEach(function (button) {
+                button.disabled = false;
+            });
         };
         depth4.appendChild(button);
     }
@@ -123,8 +135,8 @@ function showDepth4(arg, data) {
 }
 
 
-function semester_request(btn_id) {
-    fetch('/semester_parse?semester_id=' + btn_id, {
+async function semester_request(btn_id) {
+    await fetch('/semester_parse?semester_id=' + btn_id, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -139,8 +151,8 @@ function semester_request(btn_id) {
         });
 }
 
-function course_request(btn_id) {
-    fetch('/course_parse?course_id=' + btn_id, {
+async function course_request(btn_id) {
+    await fetch('/course_parse?course_id=' + btn_id, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -155,6 +167,49 @@ function course_request(btn_id) {
         });
 }
 
-function getExcel(arg, id) {
-    console.log(`${arg}, id = ${id}`);
+async function getExcel(data) {
+    const response = await fetch('/get_excel', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: data }),
+    });
+
+    if (!response.ok) {
+        console.error('Error:', response.statusText);
+        return;
+    }
+
+    const blob = await response.blob();
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = 'semester.xlsx';
+    downloadLink.click();
+}
+
+async function check() {
+    for (let level in dict_data) {
+        console.log(`Уровень: ${level}`);
+        for (let specialty in dict_data[level]) {
+            console.log(`Направление: ${specialty}`);
+            for (let year in dict_data[level][specialty]) {
+                console.log(`Курс: ${year}`);
+                for (let semester in dict_data[level][specialty][year]) {
+                    console.log(`Семестр: ${semester}`);
+                    let s_id = dict_data[level][specialty][year][semester]
+                    await semester_request(s_id);
+                    for (let course in semester_data['data']) {
+                        console.log(`Предмет: ${course}`);
+                        if (semester_data['data'][course].hasOwnProperty('id')) {
+                            let c_id = semester_data['data'][course]['id'];
+                            await course_request(c_id);
+                            console.log(course_data['data'])
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
