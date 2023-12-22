@@ -10,16 +10,16 @@
     <div class="main">
         <div class="content">
             <h2>Институт информатики и математики</h2>
-            <button class="parse btn" onclick="changeColor(this);showDepth1()">Parse</button>
+            <button class="parse btn" onclick="changeColor(this);data_request(this)">Parse</button>
         </div>
         <div class="depth1">
-            <button class="bac btn" onclick="changeColor(this); showDepth2('Бакалавриат', {{ data }})">
+            <button class="bac btn" onclick="changeColor(this); showDepth2('Бакалавриат')">
                 Бакалавриат
             </button>
-            <button class="mag btn" onclick="changeColor(this); showDepth2('Магистратура', {{ data }})">
+            <button class="mag btn" onclick="changeColor(this); showDepth2('Магистратура')">
                 Магистратура
             </button>
-            <button class="asp btn" onclick="changeColor(this); showDepth2('Аспирантура', {{ data }})">
+            <button class="asp btn" onclick="changeColor(this); showDepth2('Аспирантура')">
                 Аспирантура
             </button>
         </div>

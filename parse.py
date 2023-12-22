@@ -184,8 +184,7 @@ def parse():
 
 
 # if __name__ == '__main__':
-#     # parse()
-#
-#     authorization()
-#     print(course_parse('32457'))
+#     # authorization()
+#     parse()
+#     # print(course_parse('32457'))
 #     # print(semester_parse('1671'))

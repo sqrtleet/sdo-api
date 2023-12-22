@@ -9,5 +9,5 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", response_class=HTMLResponse)
-def home(request: Request, data: Dict):
-    return templates.TemplateResponse("index.html", {"request": request, "data": data})
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})

@@ -10,6 +10,7 @@ let spec = null;
 let semester_data = null;
 let course_data = null;
 let dict_data = null;
+let course_name = null;
 
 function changeColor(button) {
     if (currentButton !== null) {
@@ -23,8 +24,7 @@ function showDepth1() {
     depth1.style.visibility = "visible";
 }
 
-function showDepth2(arg, data) {
-    dict_data = data;
+function showDepth2(arg) {
     if (depth2 === null) {
         content = document.createElement("div");
         content.classList.add("depth_content");
@@ -48,13 +48,14 @@ function showDepth2(arg, data) {
 
     category = arg;
 
-    for (const key in data[arg]) {
+    for (const key in dict_data[arg]) {
         const button = document.createElement("button");
         button.classList.add("specialty_btn");
         button.innerText = key;
         button.onclick = function () {
+            course_name = key;
             changeColor(button);
-            showDepth3(key, data);
+            showDepth3(key, dict_data);
         };
         depth2.appendChild(button);
     }
@@ -105,7 +106,6 @@ function showDepth4(arg, data) {
         showDepth3(spec, data);
     };
 
-
     for (const key in data[category][spec][arg]) {
         let id = data[category][spec][arg][key];
         const button = document.createElement("button");
@@ -117,15 +117,20 @@ function showDepth4(arg, data) {
             buttons.forEach(function (button) {
                 button.disabled = true;
             });
-            await semester_request(id)
+            await semester_request(id);
+            console.log(course_name);
             console.log(semester_data);
-            for (let i in semester_data['data']) {
-                let course_id = semester_data['data'][i]['id'];
-                await course_request(course_id);
-                await getExcel(course_data);
-            }
+            await getExcelCount(course_name + ` ${key}`, semester_data);
+            // for (let i in semester_data['data']) {
+            //     let course_id = semester_data['data'][i]['id'];
+            //     await course_request(course_id);
+            //     console.log(course_data);
+            //     await getExcel(course_data);
+            // }
             buttons.forEach(function (button) {
-                button.disabled = false;
+                if (button.className !== "parse btn") {
+                    button.disabled = false;
+                }
             });
         };
         depth4.appendChild(button);
@@ -134,6 +139,23 @@ function showDepth4(arg, data) {
     block.appendChild(button);
 }
 
+async function data_request(btn) {
+    btn.disabled = true;
+    await fetch('/parse_data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            dict_data = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    showDepth1();
+}
 
 async function semester_request(btn_id) {
     await fetch('/semester_parse?semester_id=' + btn_id, {
@@ -173,7 +195,7 @@ async function getExcel(data) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({data}),
     });
 
     if (!response.ok) {
@@ -186,6 +208,28 @@ async function getExcel(data) {
     const downloadLink = document.createElement('a');
     downloadLink.href = window.URL.createObjectURL(blob);
     downloadLink.download = 'semester.xlsx';
+    downloadLink.click();
+}
+
+async function getExcelCount(specialty, data) {
+    const response = await fetch('/get_excel_count', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({specialty, data}),
+    });
+
+    if (!response.ok) {
+        console.error('Error:', response.statusText);
+        return;
+    }
+    console.log('ok');
+    const blob = await response.blob();
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = `${specialty}.xlsx`;
     downloadLink.click();
 }
 
