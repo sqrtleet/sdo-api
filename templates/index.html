@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sdo</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+<body>
+    <div class="main">
+        <div class="content">
+            <h2>Институт информатики и математики</h2>
+            <button class="parse btn" onclick="changeColor(this);data_request(this)">Parse</button>
+        </div>
+        <div class="depth1">
+            <button class="bac btn" onclick="changeColor(this); showDepth2('Бакалавриат')">
+                Бакалавриат
+            </button>
+            <button class="mag btn" onclick="changeColor(this); showDepth2('Магистратура')">
+                Магистратура
+            </button>
+            <button class="asp btn" onclick="changeColor(this); showDepth2('Аспирантура')">
+                Аспирантура
+            </button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>
+</html>
