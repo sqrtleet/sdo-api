@@ -121,12 +121,6 @@ function showDepth4(arg, data) {
             console.log(course_name);
             console.log(semester_data);
             await getExcelCount(course_name + ` ${key}`, semester_data);
-            // for (let i in semester_data['data']) {
-            //     let course_id = semester_data['data'][i]['id'];
-            //     await course_request(course_id);
-            //     console.log(course_data);
-            //     await getExcel(course_data);
-            // }
             buttons.forEach(function (button) {
                 if (button.className !== "parse btn") {
                     button.disabled = false;
@@ -187,28 +181,6 @@ async function course_request(btn_id) {
         .catch(error => {
             console.error('Error:', error);
         });
-}
-
-async function getExcel(data) {
-    const response = await fetch('/get_excel', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({data}),
-    });
-
-    if (!response.ok) {
-        console.error('Error:', response.statusText);
-        return;
-    }
-
-    const blob = await response.blob();
-
-    const downloadLink = document.createElement('a');
-    downloadLink.href = window.URL.createObjectURL(blob);
-    downloadLink.download = 'semester.xlsx';
-    downloadLink.click();
 }
 
 async function getExcelCount(specialty, data) {

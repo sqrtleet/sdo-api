@@ -41,19 +41,6 @@ def course_parse(course_id: str):
     return {'data': data}
 
 
-@app.post('/get_excel')
-def get_excel(data: dict):
-    res = create_excel_handler(data)
-    stream = BytesIO()
-    res.save(stream)
-    stream.seek(0)
-    headers = {
-        "Content-Disposition": f"attachment; filename={'semester.xlsx'}",
-        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    }
-    return StreamingResponse(iter([stream.getvalue()]), headers=headers)
-
-
 @app.post('/get_excel_count')
 def get_excel_count(data: dict):
     print(data)
