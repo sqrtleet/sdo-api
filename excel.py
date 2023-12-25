@@ -1,11 +1,7 @@
-import os
-import textwrap
-
-from openpyxl import load_workbook, Workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Border, Side
 
 from parse import course_parse as course_parse_handler
-from parse import authorization as authorization_handler
 
 
 def create_excel_count(wb, name, course_data):

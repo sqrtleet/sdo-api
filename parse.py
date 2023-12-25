@@ -1,7 +1,5 @@
-import lxml
 import requests
 
-from fastapi import FastAPI
 from bs4 import BeautifulSoup
 
 session = None

@@ -1,18 +1,16 @@
-import uvicorn
 import urllib.parse
-
-from fastapi import FastAPI, Request, Response, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import StreamingResponse
 from io import BytesIO
 
+import uvicorn
+from fastapi import FastAPI, Request
+from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
+
+from excel import get_excel as get_excel_handler
 from home import home as home_handler
+from parse import course_parse as course_parse_handler
 from parse import parse as parse_handler
 from parse import semester_parse as semester_parse_handler
-from parse import course_parse as course_parse_handler
-from parse import authorization as auth_handler
-from excel import create_excel as create_excel_handler
-from excel import get_excel as get_excel_handler
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
