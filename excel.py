@@ -17,12 +17,16 @@ def create_excel_count(wb, name, course_data):
 
     thin_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'),
                          bottom=Side(style='thin'))
+    ws.cell(row=next_row + 1, column=1, value='Тип').border = thin_border
+    for row, tp in enumerate(resource_types, start=2):
+        ws.cell(row=next_row + row, column=1, value=f'{tp}').border = thin_border
+
     ws.merge_cells(start_row=next_row, start_column=1, end_row=next_row, end_column=len(course_data))
     cell = ws.cell(row=next_row, column=1, value=name)
     cell.fill = PatternFill('solid', fgColor='FFb3ffe6')
     cell.border = thin_border
 
-    for col, module in enumerate(course_data, start=1):
+    for col, module in enumerate(course_data, start=2):
         row = next_row + 2
         ws.cell(row=next_row + 1, column=col, value=module).border = thin_border
         ws.column_dimensions[ws.cell(row=next_row + 1, column=col).column_letter].width = len(module) + 4 if len(
@@ -37,7 +41,7 @@ def create_excel_count(wb, name, course_data):
                 if cdmv in resource_types:
                     module_elements[module][cdmv] += 1
         for key, value in module_elements[module].items():
-            ws.cell(row=row, column=col, value=f'{key}: {value}').border = thin_border
+            ws.cell(row=row, column=col, value=f'{value}').border = thin_border
             row += 1
     return wb
 
